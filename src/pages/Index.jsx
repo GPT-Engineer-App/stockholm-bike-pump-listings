@@ -68,6 +68,17 @@ const Index = () => {
             </Box>
           ))}
         </SimpleGrid>
+        <Box w="100%" mt={8}>
+          <Heading as="h2" size="lg" mb={4}>List of All Bike Pumps</Heading>
+          <VStack spacing={4} align="stretch">
+            {bikePumps.map((pump) => (
+              <Box key={pump.id} p={4} borderWidth="1px" borderRadius="lg">
+                <Text fontWeight="bold">{pump.name}</Text>
+                <Text>{pump.location}</Text>
+              </Box>
+            ))}
+          </VStack>
+        </Box>
       </VStack>
     </Container>
   );
