@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { createClient } from "@supabase/supabase-js";
+import proj4 from 'proj4';
 import { useState, useEffect } from "react";
 
 const supabaseUrl = "https://oqjbawhobiyztyhzjywu.supabase.co";
@@ -19,12 +20,12 @@ const customIcon = new L.Icon({
 });
 
 const convertCoordinates = (x, y) => {
-  const R = 6378137;
-  const originShift = (2 * Math.PI * R) / 2;
-  const lon = (x / originShift) * 180.0;
-  const lat = (y / originShift) * 180.0;
-  const lat_rad = Math.atan(Math.exp((lat * Math.PI) / 180.0)) * 2 - Math.PI / 2;
-  return [(lat_rad * 180.0) / Math.PI, lon];
+  const proj4 = require('proj4');
+  // Define the projection for the coordinates from the database
+  const sourceProj = 'EPSG:3857'; // Assuming the coordinates are in Web Mercator
+  const destProj = 'EPSG:4326'; // WGS84
+  const [lon, lat] = proj4(sourceProj, destProj, [y, x]);
+  return [lat, lon];
 };
 
 const Index = () => {
