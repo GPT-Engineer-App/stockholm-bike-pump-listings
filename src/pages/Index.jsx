@@ -9,6 +9,33 @@ const supabaseUrl = 'https://oqjbawhobiyztyhzjywu.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xamJhd2hvYml5enR5aHpqeXd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY0NTgyNjMsImV4cCI6MjAzMjAzNDI2M30.NIFzAgC7nCY2zZdgl-RKWFqrrD6-mds6B9Bt3OwQOrw';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Add this function to convert the coordinates
+const convertCoordinates = (x, y) => {
+  const R_MAJOR = 6378137.0;
+  const R_MINOR = 6356752.314245179;
+  const temp = R_MINOR / R_MAJOR;
+  const es = 1.0 - (temp * temp);
+  const eccent = Math.sqrt(es);
+  const com = 0.5 * eccent;
+  const degToRad = Math.PI / 180.0;
+  const radToDeg = 180.0 / Math.PI;
+
+  const longitude = x * radToDeg / R_MAJOR;
+  let ts = Math.exp(-y / R_MAJOR);
+  let phi = Math.PI / 2 - 2 * Math.atan(ts);
+
+  let dphi = 1.0;
+  let con = 0.0;
+
+  for (let i = 0; Math.abs(dphi) > 0.000000001 && i < 15; i++) {
+    con = eccent * Math.sin(phi);
+    dphi = Math.PI / 2 - 2 * Math.atan(ts * Math.pow((1.0 - con) / (1.0 + con), com)) - phi;
+    phi += dphi;
+  }
+
+  return [phi * radToDeg, longitude];
+};
+
 const customIcon = new L.Icon({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   iconSize: [25, 41],
@@ -29,7 +56,12 @@ const Index = () => {
       if (error) {
         console.error('Error fetching pumps:', error);
       } else {
-        setBikePumps(pumps);
+        const convertedPumps = pumps.map(pump => ({
+          ...pump,
+          latitude: convertCoordinates(pump.latitude, pump.longitude)[0],
+          longitude: convertCoordinates(pump.latitude, pump.longitude)[1]
+        }));
+        setBikePumps(convertedPumps);
       }
     };
 
