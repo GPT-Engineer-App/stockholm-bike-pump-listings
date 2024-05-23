@@ -18,6 +18,26 @@ const customIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
+const convertCoordinates = (x, y) => {
+  const R_MAJOR = 6378137.0;
+  const R_MINOR = 6356752.3142;
+  const temp = R_MINOR / R_MAJOR;
+  const es = 1.0 - (temp * temp);
+  const eccent = Math.sqrt(es);
+  const ts = Math.exp(-y / R_MAJOR);
+  const phi = Math.PI / 2 - 2 * Math.atan(ts);
+  let dphi = 0.1;
+  let con = 0;
+  let i = 0;
+  while (Math.abs(dphi) > 0.000000001 && i < 15) {
+    con = eccent * Math.sin(phi);
+    dphi = Math.PI / 2 - 2 * Math.atan(ts * Math.pow((1.0 - con) / (1.0 + con), eccent / 2)) - phi;
+    phi += dphi;
+    i++;
+  }
+  return [x / R_MAJOR * 180.0 / Math.PI, phi * 180.0 / Math.PI];
+};
+
 const Index = () => {
   const [bikePumps, setBikePumps] = useState([]);
 
@@ -29,7 +49,12 @@ const Index = () => {
       if (error) {
         console.error('Error fetching pumps:', error);
       } else {
-        setBikePumps(pumps);
+        const convertedPumps = pumps.map(pump => ({
+          ...pump,
+          latitude: convertCoordinates(pump.longitude, pump.latitude)[1],
+          longitude: convertCoordinates(pump.longitude, pump.latitude)[0]
+        }));
+        setBikePumps(convertedPumps);
       }
     };
 
