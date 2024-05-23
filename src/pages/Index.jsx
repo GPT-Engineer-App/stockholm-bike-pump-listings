@@ -2,27 +2,12 @@ import { Box, Container, Flex, Heading, VStack, Text, SimpleGrid, Image } from "
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { createClient } from '@supabase/supabase-js';
+import { useState, useEffect } from 'react';
 
-const bikePumps = [
-  {
-    id: 1,
-    name: "Central Station Pump",
-    location: "Central Station, Stockholm",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    id: 2,
-    name: "City Hall Pump",
-    location: "City Hall, Stockholm",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    id: 3,
-    name: "Old Town Pump",
-    location: "Old Town, Stockholm",
-    image: "https://via.placeholder.com/150",
-  },
-];
+const supabaseUrl = 'https://oqjbawhobiyztyhzjywu.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xamJhd2hvYml5enR5aHpqeXd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY0NTgyNjMsImV4cCI6MjAzMjAzNDI2M30.NIFzAgC7nCY2zZdgl-RKWFqrrD6-mds6B9Bt3OwQOrw';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const customIcon = new L.Icon({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
@@ -34,6 +19,23 @@ const customIcon = new L.Icon({
 });
 
 const Index = () => {
+  const [bikePumps, setBikePumps] = useState([]);
+
+  useEffect(() => {
+    const fetchPumps = async () => {
+      let { data: pumps, error } = await supabase
+        .from('pumps')
+        .select('*');
+      if (error) {
+        console.error('Error fetching pumps:', error);
+      } else {
+        setBikePumps(pumps);
+      }
+    };
+
+    fetchPumps();
+  }, []);
+
   return (
     <Container maxW="container.xl" p={4}>
       <Flex as="nav" bg="blue.500" color="white" p={4} justifyContent="center">
@@ -47,7 +49,7 @@ const Index = () => {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
             {bikePumps.map((pump) => (
-              <Marker key={pump.id} position={[59.3293, 18.0686]} icon={customIcon}>
+              <Marker key={pump.id} position={[pump.latitude, pump.longitude]} icon={customIcon}>
                 <Popup>
                   <strong>{pump.name}</strong><br />{pump.location}
                 </Popup>
