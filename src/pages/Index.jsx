@@ -56,11 +56,11 @@ const Index = () => {
                   <br />
                   <strong>Longitude:</strong> {pump.longitude}
                   <br />
-                  <strong>Bilventil:</strong> {pump.bilventil ? "Yes" : "No"}
+                  <strong>Bilventil:</strong> {pump.bilventil}
                   <br />
-                  <strong>Cykelventil:</strong> {pump.cykelventil ? "Yes" : "No"}
+                  <strong>Cykelventil:</strong> {pump.cykelventil}
                   <br />
-                  <strong>Racer Ventil:</strong> {pump.racer_ventil ? "Yes" : "No"}
+                  <strong>Racer Ventil:</strong> {pump.racer_ventil}
                   <br />
                   <strong>Address:</strong> {pump.address}
                   <br />
