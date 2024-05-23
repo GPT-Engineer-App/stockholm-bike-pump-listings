@@ -1,5 +1,5 @@
-import { Box, Container, Flex, Heading, Link } from "@chakra-ui/react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { Box, Container, Flex, Heading, Link, Button } from "@chakra-ui/react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { createClient } from "@supabase/supabase-js";
@@ -20,6 +20,8 @@ const customIcon = new L.Icon({
 
 const Index = () => {
   const [bikePumps, setBikePumps] = useState([]);
+  const [currentPosition, setCurrentPosition] = useState(null);
+  const map = useMap();
 
   useEffect(() => {
     const fetchPumps = async () => {
@@ -34,6 +36,23 @@ const Index = () => {
     fetchPumps();
   }, []);
 
+  const handleCurrentPosition = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCurrentPosition([latitude, longitude]);
+          map.flyTo([latitude, longitude], 13);
+        },
+        (error) => {
+          console.error("Error getting current position:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  };
+
   return (
     <Container maxW="100vw" p={0} m={0} h="100vh">
       <Flex as="nav" bg="brand.900" color="white" p={4} justifyContent="space-between">
@@ -44,7 +63,7 @@ const Index = () => {
           View List
         </Link>
       </Flex>
-      <Box w="100%" h="calc(100vh - 64px)">
+      <Box w="100%" h="calc(100vh - 64px)" position="relative">
         <MapContainer center={[59.3293, 18.0686]} zoom={13} style={{ height: "100%", width: "100%" }}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
           {bikePumps.map((pump) => (
@@ -84,7 +103,23 @@ const Index = () => {
               </Popup>
             </Marker>
           ))}
+          {currentPosition && (
+            <Marker position={currentPosition} icon={customIcon}>
+              <Popup>
+                <strong>Your Current Position</strong>
+              </Popup>
+            </Marker>
+          )}
         </MapContainer>
+        <Button
+          position="absolute"
+          top="10px"
+          right="10px"
+          colorScheme="teal"
+          onClick={handleCurrentPosition}
+        >
+          View My Current Position
+        </Button>
       </Box>
     </Container>
   );
