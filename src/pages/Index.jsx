@@ -50,7 +50,13 @@ const Index = () => {
                 <Popup>
                   <strong>{pump.name}</strong>
                   <br />
-                  {pump.location}
+                  <strong>Latitude:</strong> {pump.latitude}
+                  <br />
+                  <strong>Longitude:</strong> {pump.longitude}
+                  <br />
+                  <strong>Bilventil:</strong> {pump.bilventil ? "Yes" : "No"}
+                  <br />
+                  <strong>Cykelventil:</strong> {pump.cykelventil ? "Yes" : "No"}
                   <br />
                   <Link
                     href={`https://www.google.com/maps/dir/?api=1&destination=${pump.latitude},${pump.longitude}`}
