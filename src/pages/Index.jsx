@@ -48,7 +48,9 @@ const Index = () => {
             {bikePumps.map((pump) => (
               <Marker key={pump.id} position={[pump.latitude, pump.longitude]} icon={customIcon}>
                 <Popup>
-                  <strong>{pump.name}</strong>
+                  <strong>ID:</strong> {pump.id}
+                  <br />
+                  <strong>Name:</strong> {pump.name}
                   <br />
                   <strong>Latitude:</strong> {pump.latitude}
                   <br />
@@ -57,6 +59,16 @@ const Index = () => {
                   <strong>Bilventil:</strong> {pump.bilventil ? "Yes" : "No"}
                   <br />
                   <strong>Cykelventil:</strong> {pump.cykelventil ? "Yes" : "No"}
+                  <br />
+                  <strong>Racer Ventil:</strong> {pump.racer_ventil ? "Yes" : "No"}
+                  <br />
+                  <strong>Address:</strong> {pump.address}
+                  <br />
+                  <strong>Status:</strong> {pump.status}
+                  <br />
+                  <strong>Model:</strong> {pump.model}
+                  <br />
+                  <strong>Comment:</strong> {pump.comment}
                   <br />
                   <Link
                     href={`https://www.google.com/maps/dir/?api=1&destination=${pump.latitude},${pump.longitude}`}
