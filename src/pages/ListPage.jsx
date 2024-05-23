@@ -23,7 +23,7 @@ const ListPage = () => {
   }, []);
 
   return (
-    <Container maxW="container.xl" p={4}>
+    <Container maxW="container.xl" p={4} bg="black" color="white">
       <Flex as="nav" bg="brand.900" color="white" p={4} justifyContent="space-between">
         <Heading as="h1" size="lg">
           List of Bike Pumps
