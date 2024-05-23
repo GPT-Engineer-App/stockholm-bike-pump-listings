@@ -51,6 +51,16 @@ const Index = () => {
                   <strong>{pump.name}</strong>
                   <br />
                   {pump.location}
+                  <br />
+                  <Link
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${pump.latitude},${pump.longitude}`}
+                    color="blue.500"
+                    isExternal
+                    mt={2}
+                    display="block"
+                  >
+                    Get Directions
+                  </Link>
                 </Popup>
               </Marker>
             ))}
