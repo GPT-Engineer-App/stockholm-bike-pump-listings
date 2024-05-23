@@ -5,6 +5,50 @@ import L from 'leaflet';
 import { createClient } from '@supabase/supabase-js';
 import { useState, useEffect } from 'react';
 
+const convertCoordinates = (x, y) => {
+  const a = 6378137.0; // WGS 84 major axis
+  const f = 1 / 298.257222101; // WGS 84 flattening
+  const e2 = f * (2 - f); // Square of eccentricity
+  const n = f / (2 - f);
+  const A = a / (1 + n) * (1 + n * n / 4 + n * n * n * n / 64);
+  const beta1 = 1 / 2 * n - 2 / 3 * n * n + 5 / 16 * n * n * n;
+  const beta2 = 13 / 48 * n * n - 3 / 5 * n * n * n;
+  const beta3 = 61 / 240 * n * n * n;
+  const delta1 = 2 * n - 2 / 3 * n * n - 2 * n * n * n;
+  const delta2 = 7 / 3 * n * n - 8 / 5 * n * n * n;
+  const delta3 = 56 / 15 * n * n * n;
+
+  const lambda0 = 15.0 * Math.PI / 180.0; // Central meridian for SWEREF 99 TM
+
+  const xi = x / A;
+  const eta = y / A;
+
+  const xiPrim = xi -
+    beta1 * Math.sin(2 * xi) * Math.cosh(2 * eta) -
+    beta2 * Math.sin(4 * xi) * Math.cosh(4 * eta) -
+    beta3 * Math.sin(6 * xi) * Math.cosh(6 * eta);
+
+  const etaPrim = eta -
+    beta1 * Math.cos(2 * xi) * Math.sinh(2 * eta) -
+    beta2 * Math.cos(4 * xi) * Math.sinh(4 * eta) -
+    beta3 * Math.cos(6 * xi) * Math.sinh(6 * eta);
+
+  const phiStar = Math.asin(Math.sin(xiPrim) / Math.cosh(etaPrim));
+  const deltaLambda = Math.atan(Math.sinh(etaPrim) / Math.cos(xiPrim));
+
+  const lonRadian = lambda0 + deltaLambda;
+  const latRadian = phiStar + Math.sin(phiStar) * Math.cos(phiStar) * (
+    delta1 +
+    delta2 * Math.sin(phiStar) * Math.sin(phiStar) +
+    delta3 * Math.sin(phiStar) * Math.sin(phiStar) * Math.sin(phiStar) * Math.sin(phiStar)
+  );
+
+  const lat = latRadian * 180.0 / Math.PI;
+  const lon = lonRadian * 180.0 / Math.PI;
+
+  return [lat, lon];
+};
+
 const supabaseUrl = 'https://oqjbawhobiyztyhzjywu.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xamJhd2hvYml5enR5aHpqeXd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY0NTgyNjMsImV4cCI6MjAzMjAzNDI2M30.NIFzAgC7nCY2zZdgl-RKWFqrrD6-mds6B9Bt3OwQOrw';
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -29,7 +73,11 @@ const Index = () => {
       if (error) {
         console.error('Error fetching pumps:', error);
       } else {
-        setBikePumps(pumps);
+        const convertedPumps = pumps.map(pump => {
+          const [latitude, longitude] = convertCoordinates(pump.latitude, pump.longitude);
+          return { ...pump, latitude, longitude };
+        });
+        setBikePumps(convertedPumps);
       }
     };
 
