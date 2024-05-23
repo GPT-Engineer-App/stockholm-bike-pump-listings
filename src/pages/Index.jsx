@@ -19,11 +19,12 @@ const customIcon = new L.Icon({
 });
 
 const convertCoordinates = (x, y) => {
-  const proj4 = require("proj4");
-  const sourceProj = "+proj=tmerc +lat_0=0 +lon_0=15 +k=1 +x_0=150000 +y_0=0 +ellps=GRS80 +units=m +no_defs";
-  const destProj = proj4.WGS84;
-  const [lon, lat] = proj4(sourceProj, destProj, [y, x]);
-  return [lat, lon];
+  const R = 6378137;
+  const originShift = (2 * Math.PI * R) / 2;
+  const lon = (x / originShift) * 180.0;
+  const lat = (y / originShift) * 180.0;
+  const lat_rad = Math.atan(Math.exp((lat * Math.PI) / 180.0)) * 2 - Math.PI / 2;
+  return [(lat_rad * 180.0) / Math.PI, lon];
 };
 
 const Index = () => {
