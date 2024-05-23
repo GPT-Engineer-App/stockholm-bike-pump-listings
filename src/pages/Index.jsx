@@ -1,4 +1,4 @@
-import { Box, Container, Flex, Heading, VStack, Text, SimpleGrid, Link } from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, VStack, Text, Link } from "@chakra-ui/react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -56,27 +56,6 @@ const Index = () => {
             ))}
           </MapContainer>
         </Box>
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={10}>
-          {bikePumps.map((pump) => (
-            <Box key={pump.id} borderWidth="1px" borderRadius="lg" overflow="hidden">
-              <Box p={6}>
-                <Heading as="h3" size="md">
-                  {pump.name}
-                </Heading>
-                <Text mt={4}>{pump.location}</Text>
-                <Link
-                  href={`https://www.google.com/maps/search/?api=1&query=${pump.latitude},${pump.longitude}`}
-                  color="blue.500"
-                  isExternal
-                  mt={2}
-                  display="block"
-                >
-                  View on Google Maps
-                </Link>
-              </Box>
-            </Box>
-          ))}
-        </SimpleGrid>
         <Box w="100%" mt={8}>
           <Heading as="h2" size="lg" mb={4}>
             List of All Bike Pumps
@@ -86,6 +65,15 @@ const Index = () => {
               <Box key={pump.id} p={4} borderWidth="1px" borderRadius="lg">
                 <Text fontWeight="bold">{pump.name}</Text>
                 <Text>{pump.location}</Text>
+                <Link
+                  href={`https://www.google.com/maps/search/?api=1&query=${pump.latitude},${pump.longitude}`}
+                  color="blue.500"
+                  isExternal
+                  mt={2}
+                  display="block"
+                >
+                  View on Google Maps
+                </Link>
               </Box>
             ))}
           </VStack>
