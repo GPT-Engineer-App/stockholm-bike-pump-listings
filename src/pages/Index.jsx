@@ -1,4 +1,4 @@
-import { Box, Container, Flex, Heading, VStack, Text, SimpleGrid, Image } from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, VStack, Text, SimpleGrid, Link } from "@chakra-ui/react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -71,12 +71,20 @@ const Index = () => {
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={10}>
           {bikePumps.map((pump) => (
             <Box key={pump.id} borderWidth="1px" borderRadius="lg" overflow="hidden">
-              <Image src={pump.image} alt={pump.name} />
               <Box p={6}>
                 <Heading as="h3" size="md">
                   {pump.name}
                 </Heading>
                 <Text mt={4}>{pump.location}</Text>
+                <Link
+                  href={`https://www.google.com/maps/search/?api=1&query=${convertCoordinates(pump.latitude, pump.longitude).join(",")}`}
+                  color="blue.500"
+                  isExternal
+                  mt={2}
+                  display="block"
+                >
+                  View on Google Maps
+                </Link>
               </Box>
             </Box>
           ))}
