@@ -24,11 +24,11 @@ const ListPage = () => {
 
   return (
     <Container maxW="container.xl" p={4}>
-      <Flex as="nav" bg="blue.500" color="white" p={4} justifyContent="space-between">
+      <Flex as="nav" bg="brand.900" color="white" p={4} justifyContent="space-between">
         <Heading as="h1" size="lg">
           List of Bike Pumps
         </Heading>
-        <Link href="/" color="white" fontSize="lg">
+        <Link href="/" color="gray.300" fontSize="lg" _hover={{ color: "gray.500" }}>
           View Map
         </Link>
       </Flex>
@@ -39,24 +39,25 @@ const ListPage = () => {
           </Heading>
           <VStack spacing={4} align="stretch">
             {bikePumps.map((pump) => (
-              <Box key={pump.id} p={4} borderWidth="1px" borderRadius="lg">
-                <Text fontWeight="bold">{pump.name}</Text>
-                <Text>ID: {pump.id}</Text>
-                <Text>Latitude: {pump.latitude}</Text>
-                <Text>Longitude: {pump.longitude}</Text>
-                <Text>Bilventil: {pump.bilventil ? "Yes" : "No"}</Text>
-                <Text>Cykelventil: {pump.cykelventil ? "Yes" : "No"}</Text>
-                <Text>Racer Ventil: {pump.racer_ventil ? "Yes" : "No"}</Text>
-                <Text>Address: {pump.address}</Text>
-                <Text>Status: {pump.status}</Text>
-                <Text>Model: {pump.model}</Text>
-                <Text>Comment: {pump.comment}</Text>
+              <Box key={pump.id} p={4} borderWidth="1px" borderRadius="lg" bg="gray.800" color="white">
+                <Text fontWeight="bold" color="gray.100">{pump.name}</Text>
+                <Text color="gray.300">ID: {pump.id}</Text>
+                <Text color="gray.300">Latitude: {pump.latitude}</Text>
+                <Text color="gray.300">Longitude: {pump.longitude}</Text>
+                <Text color="gray.300">Bilventil: {pump.bilventil ? "Yes" : "No"}</Text>
+                <Text color="gray.300">Cykelventil: {pump.cykelventil ? "Yes" : "No"}</Text>
+                <Text color="gray.300">Racer Ventil: {pump.racer_ventil ? "Yes" : "No"}</Text>
+                <Text color="gray.300">Address: {pump.address}</Text>
+                <Text color="gray.300">Status: {pump.status}</Text>
+                <Text color="gray.300">Model: {pump.model}</Text>
+                <Text color="gray.300">Comment: {pump.comment}</Text>
                 <Link
                   href={`https://www.google.com/maps/search/?api=1&query=${pump.latitude},${pump.longitude}`}
-                  color="blue.500"
+                  color="blue.300"
                   isExternal
                   mt={2}
                   display="block"
+                  _hover={{ color: "blue.500" }}
                 >
                   View on Google Maps
                 </Link>

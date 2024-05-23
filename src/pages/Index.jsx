@@ -36,7 +36,7 @@ const Index = () => {
 
   return (
     <Container maxW="100vw" p={0} m={0} h="100vh">
-      <Flex as="nav" bg="blue.500" color="white" p={4} justifyContent="space-between">
+      <Flex as="nav" bg="brand.900" color="white" p={4} justifyContent="space-between">
         <Heading as="h1" size="lg">
           Bike Pumps in Stockholm
         </Heading>
@@ -74,7 +74,7 @@ const Index = () => {
                 <br />
                 <Link
                   href={`https://www.google.com/maps/dir/?api=1&destination=${pump.latitude},${pump.longitude}`}
-                  color="blue.500"
+                  color="blue.300"
                   isExternal
                   mt={2}
                   display="block"
